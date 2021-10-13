@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <title>Steamify</title>
+    <style>
+      body {
+        font-family: "Urbanist", sans-serif;
+      }
+      .nav_bar {
+        width: 100%;
+        border: 2px solid gray;
+        height: 40px;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .nav_bar > button {
+        font-family: "Urbanist", sans-serif;
+        font-weight: bold;
+        height: 100%;
+        border: 1px solid white;
+        background-color: white;
+        font-size: 15px;
+        width: 80px;
+      }
+      .search_bar {
+        width: 100%;
+        /* border: 2px solid gray; */
+        height: 40px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      .search_bar > button,
+      .search_bar > input {
+        font-family: "Urbanist", sans-serif;
+        /* font-weight: bold; */
+        border: 1px solid black;
+        background-color: white;
+        font-size: 15px;
+        width: 100px;
+      }
+      .search_bar > input {
+        width: 250px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Steamify</h1>
+    <hr />
+    <div class="nav_bar">
+      <button>Home</button>
+      <button>Login</button>
+      <button>Signup</button>
+    </div>
+    <hr />
+    <div class="search_bar">
+      <input type="text" placeholder="Search for a movie" id="search_movie" />
+      <button onclick="getMovie()">Search</button>
+    </div>
+    <hr />
+    <div id="movie_grid"></div>
+  </body>
+</html>
+<script>
+  //http://www.omdbapi.com/?i=tt3896198&apikey=889062a0
+  /////////////////////////////////////////////////////////////////
+  var grid_box = document.getElementById(`movie_grid`);
+
+  async function getMovie() {
+    let movie = document.getElementById(`search_movie`).value;
+    let res = await fetch(`http://www.omdbapi.com/?apikey=889062a0&t=${movie}`);
+    let data = await res.json();
+    console.log(data);
+    showMovie(data);
+  }
+
+  function showMovie(movie) {
+    grid_box.innerHTML = null;
+    let div = document.createElement(`div`);
+
+    let img = document.createElement(`img`);
+    img.src = movie.Poster;
+
+    let plot = document.createElement(`p`);
+    plot.textContent = movie.Plot;
+
+    let cast = document.createElement(`p`);
+    cast.textContent = movie.Actors;
+
+    let relDate = document.createElement(`h4`);
+    relDate.textContent = movie.Released;
+
+    let rating = document.createElement(`h4`);
+    rating.textContent = movie.imdbRating;
+
+    div.append(img, plot, cast, relDate, rating);
+    grid_box.append(div);
+  }
+
+  ///////////////////////////////////////////////////////////
+</script>
