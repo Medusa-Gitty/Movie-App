@@ -70,20 +70,22 @@
   </body>
 </html>
 <script>
-  //http://www.omdbapi.com/?i=tt3896198&apikey=889062a0
   /////////////////////////////////////////////////////////////////
   var grid_box = document.getElementById(`movie_grid`);
-
   async function getMovie() {
+    grid_box.innerHTML = null;
     let movie = document.getElementById(`search_movie`).value;
     let res = await fetch(`http://www.omdbapi.com/?apikey=889062a0&t=${movie}`);
     let data = await res.json();
-    console.log(data);
-    showMovie(data);
+    // console.log(data.Response);
+    if (data.Response == `True`) {
+      showMovie(data);
+    } else {
+      grid_box.textContent = `Sorry Not Found`;
+    }
   }
 
   function showMovie(movie) {
-    grid_box.innerHTML = null;
     let div = document.createElement(`div`);
 
     let img = document.createElement(`img`);
