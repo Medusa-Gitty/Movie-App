@@ -40,7 +40,7 @@
       .search_bar > button,
       .search_bar > input {
         font-family: "Urbanist", sans-serif;
-        /* font-weight: bold; */
+        font-weight: bold;
         border: 1px solid black;
         background-color: white;
         font-size: 15px;
@@ -103,7 +103,15 @@
     let rating = document.createElement(`h4`);
     rating.textContent = movie.imdbRating;
 
-    div.append(img, plot, cast, relDate, rating);
+    let recommended = document.createElement(`em`);
+    recommended.textContent = `Recommended`;
+
+    if (movie.imdbRating >= 8.5) {
+      div.append(img, recommended, plot, cast, relDate, rating);
+    } else {
+      div.append(img, plot, cast, relDate, rating);
+    }
+
     grid_box.append(div);
   }
 
