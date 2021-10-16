@@ -21,6 +21,7 @@
         justify-content: flex-end;
       }
       .nav_bar > button {
+        cursor: pointer;
         font-family: "Urbanist", sans-serif;
         font-weight: bold;
         height: 100%;
@@ -30,15 +31,15 @@
         width: 80px;
       }
       .search_bar {
+        margin: auto;
         width: 100%;
-        /* border: 2px solid gray; */
         height: 40px;
         display: flex;
-        justify-content: flex-end;
         gap: 10px;
       }
       .search_bar > button,
       .search_bar > input {
+        cursor: pointer;
         font-family: "Urbanist", sans-serif;
         font-weight: bold;
         border: 1px solid black;
@@ -47,8 +48,17 @@
         width: 100px;
       }
       .search_bar > input {
-        width: 250px;
+        width: 450px;
         text-align: center;
+      }
+      #movies {
+        /* display: none; */
+        margin-top: 5px;
+        height: 200px;
+        width: 454px;
+        border: 1px solid black;
+        /* overflow: scroll; */
+        overflow: hidden;
       }
     </style>
   </head>
@@ -62,58 +72,76 @@
     </div>
     <hr />
     <div class="search_bar">
-      <input type="text" placeholder="Search for a movie" id="search_movie" />
-      <button onclick="getMovie()">Search</button>
+      <input
+        type="text"
+        id="movie"
+        oninput="debounce(main,500)"
+        placeholder="Search for a movie"
+      />
     </div>
+    <div id="movies"></div>
     <hr />
     <div id="movie_grid"></div>
   </body>
 </html>
 <script>
-  /////////////////////////////////////////////////////////////////
-  var grid_box = document.getElementById(`movie_grid`);
-  async function getMovie() {
-    grid_box.innerHTML = null;
-    let movie = document.getElementById(`search_movie`).value;
-    let res = await fetch(`http://www.omdbapi.com/?apikey=889062a0&t=${movie}`);
-    let data = await res.json();
-    // console.log(data.Response);
-    if (data.Response == `True`) {
-      showMovie(data);
-    } else {
-      grid_box.textContent = `We couldn't find anything matching "${movie}". Browse our most popular TV shows and movies below.`;
+  ///////////////////////////////////////////////////////////////
+  var timerId;
+  //searchMovies - done
+  let movies_div = document.getElementById(`movies`);
+
+  async function searchMovies(movie_name) {
+    try {
+      let res = await fetch(
+        `http://www.omdbapi.com/?apikey=889062a0&s=${movie_name}`
+      );
+      let data = await res.json();
+
+      //   console.log(data);
+      return data;
+    } catch (err) {
+      console.log(err);
     }
   }
 
-  function showMovie(movie) {
-    let div = document.createElement(`div`);
-
-    let img = document.createElement(`img`);
-    img.src = movie.Poster;
-
-    let plot = document.createElement(`p`);
-    plot.textContent = movie.Plot;
-
-    let cast = document.createElement(`p`);
-    cast.textContent = movie.Actors;
-
-    let relDate = document.createElement(`h4`);
-    relDate.textContent = movie.Released;
-
-    let rating = document.createElement(`h4`);
-    rating.textContent = movie.imdbRating;
-
-    let recommended = document.createElement(`em`);
-    recommended.textContent = `Recommended`;
-
-    if (movie.imdbRating >= 8.5) {
-      div.append(img, recommended, plot, cast, relDate, rating);
-    } else {
-      div.append(img, plot, cast, relDate, rating);
+  function appendMovies(movies) {
+    if (movies === undefined) {
+      return false;
     }
+    movies_div.innerHTML = null;
+    movies.forEach(function (movie) {
+      let p = document.createElement(`p`);
+      p.innerText = movie.Title;
 
-    grid_box.append(div);
+      movies_div.append(p);
+    });
   }
 
+  async function main() {
+    let name = document.getElementById(`movie`).value;
+    //get search movie
+    if (name.length < 3) {
+      return false;
+    }
+    let res = await searchMovies(name);
+
+    let movies_data = res.Search;
+    appendMovies(movies_data);
+    console.log(res);
+  }
+
+  //Debounce function
+  function debounce(func, delay) {
+    //func = main()
+    //ave - setTimeout - func - main() - searchMovies(`ave`)
+    //aven - Clear the prev timer - setTimeout - func - main() - searchMovies(`aven`)
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+
+    timerId = setTimeout(function () {
+      func();
+    }, delay);
+  }
   ///////////////////////////////////////////////////////////
 </script>
