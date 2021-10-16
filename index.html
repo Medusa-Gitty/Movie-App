@@ -74,54 +74,12 @@
       <button onclick="getMovie()">Search</button>
     </div>
     <div id="movies"></div>
+    <hr />
     <div id="movie_grid"></div>
   </body>
 </html>
 <script>
-  /////////////////////////////////////////////////////////////////
-  var grid_box = document.getElementById(`movie_grid`);
-  async function getMovie() {
-    grid_box.innerHTML = null;
-    let movie = document.getElementById(`search_movie`).value;
-    let res = await fetch(`http://www.omdbapi.com/?apikey=889062a0&t=${movie}`);
-    let data = await res.json();
-    // console.log(data.Response);
-    if (data.Response == `True`) {
-      showMovie(data);
-    } else {
-      grid_box.textContent = `We couldn't find anything matching "${movie}". Browse our most popular TV shows and movies below.`;
-    }
-  }
-
-  function showMovie(movie) {
-    let div = document.createElement(`div`);
-
-    let img = document.createElement(`img`);
-    img.src = movie.Poster;
-
-    let plot = document.createElement(`p`);
-    plot.textContent = movie.Plot;
-
-    let cast = document.createElement(`p`);
-    cast.textContent = movie.Actors;
-
-    let relDate = document.createElement(`h4`);
-    relDate.textContent = movie.Released;
-
-    let rating = document.createElement(`h4`);
-    rating.textContent = movie.imdbRating;
-
-    let recommended = document.createElement(`em`);
-    recommended.textContent = `Recommended`;
-
-    if (movie.imdbRating >= 8.5) {
-      div.append(img, recommended, plot, cast, relDate, rating);
-    } else {
-      div.append(img, plot, cast, relDate, rating);
-    }
-
-    grid_box.append(div);
-  }
+  ///////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////////
 </script>
