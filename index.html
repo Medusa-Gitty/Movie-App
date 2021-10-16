@@ -54,11 +54,11 @@
       #movies {
         /* display: none; */
         margin-top: 5px;
-        height: 200px;
-        width: 454px;
+        max-height: 200px;
+        width: 444px;
         border: 1px solid black;
-        /* overflow: scroll; */
-        overflow: hidden;
+        overflow-y: scroll;
+        padding-left: 10px;
       }
     </style>
   </head>
@@ -88,7 +88,7 @@
   ///////////////////////////////////////////////////////////////
   var timerId;
   //searchMovies - done
-  let movies_div = document.getElementById(`movies`);
+  let movies_SearchList = document.getElementById(`movies`);
 
   async function searchMovies(movie_name) {
     try {
@@ -96,7 +96,6 @@
         `http://www.omdbapi.com/?apikey=889062a0&s=${movie_name}`
       );
       let data = await res.json();
-
       //   console.log(data);
       return data;
     } catch (err) {
@@ -108,12 +107,11 @@
     if (movies === undefined) {
       return false;
     }
-    movies_div.innerHTML = null;
+    movies_SearchList.innerHTML = null;
     movies.forEach(function (movie) {
       let p = document.createElement(`p`);
       p.innerText = movie.Title;
-
-      movies_div.append(p);
+      movies_SearchList.append(p);
     });
   }
 
