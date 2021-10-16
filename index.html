@@ -31,10 +31,10 @@
         width: 80px;
       }
       .search_bar {
+        margin: auto;
         width: 100%;
         height: 40px;
         display: flex;
-        /* justify-content: flex-end; */
         gap: 10px;
       }
       .search_bar > button,
@@ -52,11 +52,13 @@
         text-align: center;
       }
       #movies {
+        /* display: none; */
+        margin-top: 5px;
         height: 200px;
         width: 454px;
         border: 1px solid black;
-        overflow: scroll;
-        border-top: none;
+        /* overflow: scroll; */
+        overflow: hidden;
       }
     </style>
   </head>
@@ -70,8 +72,12 @@
     </div>
     <hr />
     <div class="search_bar">
-      <input type="text" placeholder="Search for a movie" id="search_movie" />
-      <button onclick="getMovie()">Search</button>
+      <input
+        type="text"
+        id="movie"
+        oninput="debounce(main,500)"
+        placeholder="Search for a movie"
+      />
     </div>
     <div id="movies"></div>
     <hr />
@@ -80,6 +86,62 @@
 </html>
 <script>
   ///////////////////////////////////////////////////////////////
+  var timerId;
+  //searchMovies - done
+  let movies_div = document.getElementById(`movies`);
 
+  async function searchMovies(movie_name) {
+    try {
+      let res = await fetch(
+        `http://www.omdbapi.com/?apikey=889062a0&s=${movie_name}`
+      );
+      let data = await res.json();
+
+      //   console.log(data);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  function appendMovies(movies) {
+    if (movies === undefined) {
+      return false;
+    }
+    movies_div.innerHTML = null;
+    movies.forEach(function (movie) {
+      let p = document.createElement(`p`);
+      p.innerText = movie.Title;
+
+      movies_div.append(p);
+    });
+  }
+
+  async function main() {
+    let name = document.getElementById(`movie`).value;
+    //get search movie
+    if (name.length < 3) {
+      return false;
+    }
+    let res = await searchMovies(name);
+
+    let movies_data = res.Search;
+    appendMovies(movies_data);
+    console.log(res);
+  }
+
+  //Debounce function
+  function debounce(func, delay) {
+    //func = main()
+    //ave - setTimeout - func - main() - searchMovies(`ave`)
+    //aven - Clear the prev timer - setTimeout - func - main() - searchMovies(`aven`)
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+
+    timerId = setTimeout(function () {
+      func();
+    }, delay);
+  }
   ///////////////////////////////////////////////////////////
 </script>
