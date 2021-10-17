@@ -54,11 +54,11 @@
       #movies {
         /* display: none; */
         margin-top: 5px;
-        height: 200px;
-        width: 454px;
+        max-height: 200px;
+        width: 444px;
         border: 1px solid black;
-        /* overflow: scroll; */
-        overflow: hidden;
+        overflow-y: scroll;
+        padding-left: 10px;
       }
     </style>
   </head>
@@ -79,7 +79,10 @@
         placeholder="Search for a movie"
       />
     </div>
-    <div id="movies"></div>
+    <div style="display: flex">
+      <div id="movies"></div>
+      <div id="display_movie"></div>
+    </div>
     <hr />
     <div id="movie_grid"></div>
   </body>
@@ -88,7 +91,7 @@
   ///////////////////////////////////////////////////////////////
   var timerId;
   //searchMovies - done
-  let movies_div = document.getElementById(`movies`);
+  let movies_SearchList = document.getElementById(`movies`);
 
   async function searchMovies(movie_name) {
     try {
@@ -96,7 +99,6 @@
         `http://www.omdbapi.com/?apikey=889062a0&s=${movie_name}`
       );
       let data = await res.json();
-
       //   console.log(data);
       return data;
     } catch (err) {
@@ -108,12 +110,11 @@
     if (movies === undefined) {
       return false;
     }
-    movies_div.innerHTML = null;
+    movies_SearchList.innerHTML = null;
     movies.forEach(function (movie) {
       let p = document.createElement(`p`);
       p.innerText = movie.Title;
-
-      movies_div.append(p);
+      movies_SearchList.append(p);
     });
   }
 
@@ -124,7 +125,6 @@
       return false;
     }
     let res = await searchMovies(name);
-
     let movies_data = res.Search;
     appendMovies(movies_data);
     console.log(res);
@@ -138,10 +138,51 @@
     if (timerId) {
       clearTimeout(timerId);
     }
-
     timerId = setTimeout(function () {
       func();
     }, delay);
   }
+
   ///////////////////////////////////////////////////////////
+  //Request and Response
+
+  //Step 0 - Get the right URL
+  //Step 1 - handle the Promise
+  //Step 2 - .then & .catch / Async Await
+  var grid_box = document.getElementById(`movie_grid`);
+
+  fetch(
+    `https://api.themoviedb.org/3/movie/popular?api_key=9e820f10bac6b6a1aa311da64df90958&language=en-US&page=1&region=US`
+  ).then(function (res) {
+    res.json().then(function (res) {
+      res = res.results;
+      showMovie(res);
+      console.log(res);
+    });
+  });
+
+  function showMovie(movies) {
+    grid_box.innerHTML = null;
+    movies.forEach(function (el) {
+      let div = document.createElement(`div`);
+
+      let img = document.createElement(`img`);
+      img.src = el.poster_path;
+
+      let plot = document.createElement(`p`);
+      plot.textContent = el.overview;
+
+      let cast = document.createElement(`p`);
+      cast.textContent = el.Actors;
+
+      let relDate = document.createElement(`h4`);
+      relDate.textContent = el.Released;
+
+      let rating = document.createElement(`h4`);
+      rating.textContent = el.imdbRating;
+
+      div.append(img, plot, cast, relDate, rating);
+      grid_box.append(div);
+    });
+  }
 </script>
