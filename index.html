@@ -79,7 +79,10 @@
         placeholder="Search for a movie"
       />
     </div>
-    <div id="movies"></div>
+    <div style="display: flex">
+      <div id="movies"></div>
+      <div id="display_movie"></div>
+    </div>
     <hr />
     <div id="movie_grid"></div>
   </body>
@@ -122,7 +125,6 @@
       return false;
     }
     let res = await searchMovies(name);
-
     let movies_data = res.Search;
     appendMovies(movies_data);
     console.log(res);
@@ -136,10 +138,51 @@
     if (timerId) {
       clearTimeout(timerId);
     }
-
     timerId = setTimeout(function () {
       func();
     }, delay);
   }
+
   ///////////////////////////////////////////////////////////
+  //Request and Response
+
+  //Step 0 - Get the right URL
+  //Step 1 - handle the Promise
+  //Step 2 - .then & .catch / Async Await
+  var grid_box = document.getElementById(`movie_grid`);
+
+  fetch(
+    `https://api.themoviedb.org/3/movie/popular?api_key=9e820f10bac6b6a1aa311da64df90958&language=en-US&page=1&region=US`
+  ).then(function (res) {
+    res.json().then(function (res) {
+      res = res.results;
+      showMovie(res);
+      console.log(res);
+    });
+  });
+
+  function showMovie(movies) {
+    grid_box.innerHTML = null;
+    movies.forEach(function (el) {
+      let div = document.createElement(`div`);
+
+      let img = document.createElement(`img`);
+      img.src = el.poster_path;
+
+      let plot = document.createElement(`p`);
+      plot.textContent = el.overview;
+
+      let cast = document.createElement(`p`);
+      cast.textContent = el.Actors;
+
+      let relDate = document.createElement(`h4`);
+      relDate.textContent = el.Released;
+
+      let rating = document.createElement(`h4`);
+      rating.textContent = el.imdbRating;
+
+      div.append(img, plot, cast, relDate, rating);
+      grid_box.append(div);
+    });
+  }
 </script>
