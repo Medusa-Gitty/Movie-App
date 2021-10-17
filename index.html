@@ -60,6 +60,17 @@
         overflow-y: scroll;
         padding-left: 10px;
       }
+      #movie_grid {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+      }
+      #movie_grid > div {
+        margin: 10px;
+      }
+      img {
+        padding-top: 10px;
+        width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -167,13 +178,13 @@
       let div = document.createElement(`div`);
 
       let img = document.createElement(`img`);
-      img.src = el.poster_path;
+      img.src = `https://image.tmdb.org/t/p/original${el.poster_path}`;
 
-      let plot = document.createElement(`p`);
-      plot.textContent = el.overview;
+      let title = document.createElement(`p`);
+      title.textContent = el.title;
 
-      let cast = document.createElement(`p`);
-      cast.textContent = el.Actors;
+      let vote = document.createElement(`p`);
+      vote.textContent = el.vote_average;
 
       let relDate = document.createElement(`h4`);
       relDate.textContent = el.Released;
@@ -181,7 +192,7 @@
       let rating = document.createElement(`h4`);
       rating.textContent = el.imdbRating;
 
-      div.append(img, plot, cast, relDate, rating);
+      div.append(img);
       grid_box.append(div);
     });
   }
