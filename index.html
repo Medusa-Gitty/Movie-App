@@ -65,13 +65,12 @@
         grid-template-columns: auto auto auto auto;
       }
       #movie_grid > div {
-        border: 1px solid pink;
+        /* height: 150px; */
         margin: 10px;
       }
       img {
         /* padding-top: 10px; */
         width: 100%;
-        height: 70%;
       }
     </style>
   </head>
@@ -140,7 +139,7 @@
     let res = await searchMovies(name);
     let movies_data = res.Search;
     appendMovies(movies_data);
-    console.log(res);
+    // console.log(movies_data);
   }
 
   //Debounce function
@@ -170,7 +169,7 @@
     res.json().then(function (res) {
       res = res.results;
       showMovie(res);
-      console.log(res);
+      // console.log(res);
     });
   });
 
